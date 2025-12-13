@@ -8,6 +8,7 @@ com/example/order/repository/OrderRepository.class
 com/example/order/kafka/OrderEventProducer.class
 com/example/order/service/OrderService.class
 com/example/order/dto/MenuItemDto.class
+com/example/order/consumer/PaymentEventConsumer.class
 com/example/order/dto/OrderItemRequest.class
 com/example/order/service/RestaurantClient.class
 com/example/order/OrderServiceApplication.class
