@@ -1,7 +1,9 @@
 com/example/order/controller/OrderController.class
 com/example/order/dto/CreateOrderRequest.class
+com/example/order/config/KafkaConsumerConfig.class
 KafkaProducerConfig.class
 com/example/order/config/RestTemplateConfig.class
+com/example/order/consumer/DeliveryEventConsumer.class
 com/example/order/dto/RestaurantDto.class
 com/example/order/entity/Order.class
 com/example/order/repository/OrderRepository.class

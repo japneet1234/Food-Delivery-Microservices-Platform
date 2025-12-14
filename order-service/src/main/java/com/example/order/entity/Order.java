@@ -24,9 +24,22 @@ public class Order {
 
     private Instant createdAt;
 
+    @Column(name = "delivery_partner_id")
+    private Long deliveryPartnerId;
+
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<OrderItem> items;
+
+
+    public Long getDeliveryPartnerId() {
+        return deliveryPartnerId;
+    }
+
+    public void setDeliveryPartnerId(Long deliveryPartnerId) {
+        this.deliveryPartnerId = deliveryPartnerId;
+    }
+
 
     // getters & setters
     public Long getId() { return id; }
