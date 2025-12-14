@@ -1,3 +1,6 @@
+com/example/delivery/consumer/OrderEventConsumer.class
 com/example/delivery/service/DeliveryAssignmentService.class
+com/example/delivery/service/DriverMatchingService.class
+RedisConfig.class
 com/example/delivery/DeliveryAssignmentServiceApplication.class
 com/example/delivery/consumer/PaymentSuccessConsumer.class
