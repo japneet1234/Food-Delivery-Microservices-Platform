@@ -30,6 +30,7 @@ public class DeliveryAssignmentService {
                                      KafkaTemplate<String, Object> kafkaTemplate) {
         this.redisTemplate = redisTemplate;
         this.kafkaTemplate = kafkaTemplate;
+        
     }
 
     public void assignDelivery(Long orderId) {
@@ -55,6 +56,9 @@ public class DeliveryAssignmentService {
         }
 
         String partnerId = partners.iterator().next();
+
+        redisTemplate.opsForGeo()
+                .remove("delivery-partners", partnerId.toString());
 
         DeliveryAssignedEvent event = new DeliveryAssignedEvent();
         event.orderId = orderId;

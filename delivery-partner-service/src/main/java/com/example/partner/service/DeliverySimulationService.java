@@ -41,6 +41,16 @@ public class DeliverySimulationService {
         // Add back to available set for future assignment
         redisTemplate.opsForSet().add(AVAILABLE_SET, String.valueOf(partnerId));
 
+         // 🟢 ADD driver back to Redis GEO
+        redisTemplate.opsForGeo().add(
+            "delivery-partners",
+            new org.springframework.data.geo.Point(
+                partner.getCurrentLon(),
+                partner.getCurrentLat()
+            ),
+            partner.getId().toString()
+        );
+
         DeliveryCompletedEvent event =
                 new DeliveryCompletedEvent(orderId, partnerId);
 
