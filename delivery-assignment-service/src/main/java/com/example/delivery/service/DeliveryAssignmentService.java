@@ -8,6 +8,7 @@ import org.springframework.data.geo.Point;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.time.Instant;
 import java.util.Set;
@@ -22,6 +23,8 @@ public class DeliveryAssignmentService {
 
     private final StringRedisTemplate redisTemplate;
     private final KafkaTemplate<String, Object> kafkaTemplate;
+    private final RestTemplate restTemplate = new RestTemplate();
+
 
     public DeliveryAssignmentService(StringRedisTemplate redisTemplate,
                                      KafkaTemplate<String, Object> kafkaTemplate) {
@@ -62,5 +65,14 @@ public class DeliveryAssignmentService {
                 orderId.toString(), event);
 
         System.out.println("🚴 Assigned partner " + partnerId + " to order " + orderId);
+
+
+        // Mark partner as BUSY via API call
+        // Later, use Kafka instead of direct REST call
+
+        restTemplate.put(
+            "http://localhost:8084/partners/" + partnerId + "/busy",
+            null
+                );
     }
 }
