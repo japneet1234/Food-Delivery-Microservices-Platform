@@ -4,4 +4,5 @@
 /home/japneet/Desktop/swiggy/shared-lib/src/main/java/com/example/shared/events/DeliveryAssignedEvent.java
 /home/japneet/Desktop/swiggy/shared-lib/src/main/java/com/example/shared/enums/DeliveryStatus.java
 /home/japneet/Desktop/swiggy/shared-lib/src/main/java/com/example/shared/events/PaymentSuccessEvent.java
+/home/japneet/Desktop/swiggy/shared-lib/src/main/java/com/example/shared/events/DeliveryCompletedEvent.java
 /home/japneet/Desktop/swiggy/shared-lib/src/main/java/com/example/shared/enums/OrderStatus.java

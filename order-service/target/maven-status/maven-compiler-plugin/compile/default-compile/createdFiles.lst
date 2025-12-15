@@ -1,6 +1,7 @@
 com/example/order/controller/OrderController.class
 com/example/order/dto/CreateOrderRequest.class
 com/example/order/config/KafkaConsumerConfig.class
+com/example/order/consumer/DeliveryCompletedConsumer.class
 KafkaProducerConfig.class
 com/example/order/config/RestTemplateConfig.class
 com/example/order/consumer/DeliveryEventConsumer.class

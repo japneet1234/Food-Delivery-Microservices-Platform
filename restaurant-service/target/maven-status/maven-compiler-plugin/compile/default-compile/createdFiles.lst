@@ -1,0 +1,8 @@
+com/example/restaurant/repository/RestaurantRepository.class
+com/example/restaurant/config/RedisCacheConfig.class
+com/example/restaurant/repository/MenuItemRepository.class
+com/example/restaurant/service/RestaurantService.class
+com/example/restaurant/controller/RestaurantController.class
+com/example/restaurant/entity/Restaurant.class
+com/example/restaurant/entity/MenuItem.class
+com/example/restaurant/RestaurantServiceApplication.class
