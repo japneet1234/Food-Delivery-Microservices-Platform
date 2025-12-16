@@ -23,6 +23,12 @@ public class OrderController {
         return ResponseEntity.ok(order);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<Order> getOrder(@PathVariable Long id) {
+        Order order = orderService.getOrderById(id);
+        return ResponseEntity.ok(order);
+    }
+
     @GetMapping("/health")
     public String health() {
         return "OK";

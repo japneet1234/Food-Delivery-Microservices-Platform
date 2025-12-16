@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
+import { orderApi } from '@/lib/api';
 import { orderHistory } from '@/lib/orderHistory';
 import { Order, OrderStatus } from '@/types';
 import OrderStatusBadge from '@/components/OrderStatusBadge';
@@ -20,118 +21,52 @@ export default function OrderTrackingPage() {
 
   useEffect(() => {
     if (orderId) {
-      simulateOrderTracking();
+      loadOrder();
     }
   }, [orderId]);
 
-  // Auto-refresh order status every 2 seconds from local history
+  // Auto-refresh order status every 3 seconds from backend
   useEffect(() => {
     if (!autoRefresh || !order || order.status === 'DELIVERED' || order.status === 'CANCELLED') {
       return;
     }
 
     const interval = setInterval(() => {
-      const savedOrder = orderHistory.getById(orderId);
-      if (savedOrder && savedOrder.status !== order.status) {
-        setOrder(savedOrder);
-      }
-    }, 2000);
+      refreshOrder();
+    }, 3000);
 
     return () => clearInterval(interval);
   }, [orderId, order, autoRefresh]);
 
-  const simulateOrderTracking = async () => {
-    // Check local history (and simulate if needed)
-    let currentOrder = orderHistory.getById(orderId);
-    if (currentOrder) {
-      setOrder(currentOrder);
+  const loadOrder = async () => {
+    try {
+      const liveOrder = await orderApi.getById(orderId);
+      setOrder(liveOrder);
+      orderHistory.save(liveOrder);
       setLoading(false);
-      if (currentOrder.status === 'DELIVERED' || currentOrder.status === 'CANCELLED') {
-        return;
+    } catch (err) {
+      // Fall back to local history if backend not reachable
+      const local = orderHistory.getById(orderId);
+      if (local) {
+        setOrder(local);
+        setLoading(false);
+      } else {
+        setError('Order not found. Please check the ID or place an order first.');
+        setLoading(false);
       }
-    } else {
-      // If nothing found, surface error instead of silent mock
-      setError('Order not found. Please check the ID or place an order first.');
-      setLoading(false);
-      return;
     }
+  };
 
-    // Simulate status updates based on backend event flow:
-    // PLACED -> CONFIRMED (after payment success) OR CANCELLED (after payment failure)
-    // -> OUT_FOR_DELIVERY (after partner assignment) -> DELIVERED
-    const statuses: OrderStatus[] = ['PLACED', 'CONFIRMED', 'OUT_FOR_DELIVERY', 'DELIVERED'];
-    let currentStatusIndex = statuses.indexOf(currentOrder.status || 'PLACED');
-    
-    const intervals: NodeJS.Timeout[] = [];
-    
-    // Simulate payment processing - randomly succeed or fail (like backend)
-    // On failure we hard-stop the flow and mark order as CANCELLED.
-    if (currentStatusIndex < 1) {
-      intervals.push(setTimeout(() => {
-        // Random payment success/failure (50% chance each, matching backend)
-        const paymentSuccess = Math.random() > 0.5;
-        
-        if (paymentSuccess) {
-          // Payment successful -> CONFIRMED
-          const updatedOrder = { ...currentOrder, status: 'CONFIRMED' as OrderStatus };
-          setOrder(updatedOrder);
-          orderHistory.save(updatedOrder);
-          
-          // Then move to OUT_FOR_DELIVERY after 5 more seconds
-          intervals.push(setTimeout(() => {
-            const deliveryOrder = {
-              ...updatedOrder,
-              status: 'OUT_FOR_DELIVERY' as OrderStatus,
-              deliveryPartnerId: Math.floor(Math.random() * 100) + 1,
-            };
-            setOrder(deliveryOrder);
-            orderHistory.save(deliveryOrder);
-            
-            // Finally move to DELIVERED after 10 more seconds
-            intervals.push(setTimeout(() => {
-              const finalOrder = { ...deliveryOrder, status: 'DELIVERED' as OrderStatus };
-              setOrder(finalOrder);
-              orderHistory.save(finalOrder);
-            }, 10000));
-          }, 5000));
-        } else {
-          // Payment failed -> CANCELLED
-          const cancelledOrder = { ...currentOrder, status: 'CANCELLED' as OrderStatus };
-          setOrder(cancelledOrder);
-          orderHistory.save(cancelledOrder);
-          // Stop any further timers since the flow should end here
-          intervals.forEach(clearTimeout);
-        }
-      }, 3000));
-    } else if (currentStatusIndex === 1) {
-      // Already confirmed, continue with delivery flow
-      intervals.push(setTimeout(() => {
-        const updatedOrder = {
-          ...currentOrder,
-          status: 'OUT_FOR_DELIVERY' as OrderStatus,
-          deliveryPartnerId: Math.floor(Math.random() * 100) + 1,
-        };
-        setOrder(updatedOrder);
-        orderHistory.save(updatedOrder);
-        
-        intervals.push(setTimeout(() => {
-          const finalOrder = { ...updatedOrder, status: 'DELIVERED' as OrderStatus };
-          setOrder(finalOrder);
-          orderHistory.save(finalOrder);
-        }, 10000));
-      }, 2000));
-    } else if (currentStatusIndex === 2) {
-      // Already out for delivery, just complete it
-      intervals.push(setTimeout(() => {
-        const finalOrder = { ...currentOrder, status: 'DELIVERED' as OrderStatus };
-        setOrder(finalOrder);
-        orderHistory.save(finalOrder);
-      }, 10000));
+  const refreshOrder = async () => {
+    try {
+      const latest = await orderApi.getById(orderId);
+      if (latest && (!order || latest.status !== order.status || latest.deliveryPartnerId !== order.deliveryPartnerId)) {
+        setOrder(latest);
+        orderHistory.save(latest);
+      }
+    } catch (err) {
+      // Ignore transient errors; rely on last known state
     }
-
-    return () => {
-      intervals.forEach(clearTimeout);
-    };
   };
 
   if (loading) {

@@ -43,6 +43,11 @@ export const orderApi = {
     const response = await api.post<Order>(`${ORDER_API}/orders`, request);
     return response.data;
   },
+
+  getById: async (id: number): Promise<Order> => {
+    const response = await api.get<Order>(`${ORDER_API}/orders/${id}`);
+    return response.data;
+  },
 };
 
 export interface CreatePartnerRequest {
