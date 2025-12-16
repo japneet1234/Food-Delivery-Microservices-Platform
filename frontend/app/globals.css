@@ -1,0 +1,77 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: radial-gradient(circle at 20% 20%, rgba(255,165,107,0.08), transparent 35%),
+    radial-gradient(circle at 80% 0%, rgba(255,109,82,0.08), transparent 30%),
+    var(--background);
+  color: var(--foreground);
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+}
+
+:root {
+  --card-shadow: 0 20px 60px -25px rgba(0,0,0,0.25);
+  --card-shadow-strong: 0 25px 70px -30px rgba(0,0,0,0.35);
+}
+
+.glass {
+  backdrop-filter: blur(12px);
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow: var(--card-shadow);
+}
+
+.card {
+  border-radius: 16px;
+  box-shadow: var(--card-shadow);
+  background: #fff;
+}
+
+.btn-primary {
+  @apply bg-gradient-to-r from-orange-600 to-red-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all;
+}
+
+.btn-ghost {
+  @apply bg-white text-orange-600 border-2 border-orange-600 font-semibold rounded-xl hover:bg-orange-50 transition-all;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}

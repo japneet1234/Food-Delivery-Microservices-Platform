@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/partners")
+@CrossOrigin(origins = "*")
 public class DeliveryPartnerController {
 
     private final DeliveryPartnerService service;
