@@ -27,6 +27,20 @@ body {
   font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
 }
 
+.landing-bg {
+  background-image:
+    radial-gradient(circle at 20% 20%, rgba(255,165,107,0.14), transparent 34%),
+    radial-gradient(circle at 80% 10%, rgba(255,109,82,0.14), transparent 32%),
+    radial-gradient(circle at 12% 70%, rgba(59,130,246,0.08), transparent 35%),
+    linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,251,245,0.85) 45%, rgba(248,250,252,0.92) 100%),
+    linear-gradient(90deg, rgba(255,255,255,0.4) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(255,255,255,0.4) 1px, transparent 1px);
+  background-size: auto, auto, auto, auto, 120px 120px, 120px 120px;
+  background-position: center;
+  position: relative;
+  isolation: isolate;
+}
+
 :root {
   --card-shadow: 0 20px 60px -25px rgba(0,0,0,0.25);
   --card-shadow-strong: 0 25px 70px -30px rgba(0,0,0,0.35);

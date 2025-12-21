@@ -1,15 +1,17 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
-import { restaurantApi } from '@/lib/api';
-import { Restaurant, MenuItem } from '@/types';
-import MenuItemCard from '@/components/MenuItemCard';
-import { FiLoader, FiArrowLeft, FiStar, FiMapPin } from 'react-icons/fi';
-import Link from 'next/link';
-import RatingReview from '@/components/RatingReview';
+import { useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { restaurantApi } from "@/lib/api";
+import { Restaurant, MenuItem } from "@/types";
+import MenuItemCard from "@/components/MenuItemCard";
+import { FiLoader, FiArrowLeft, FiStar, FiMapPin } from "react-icons/fi";
+import Link from "next/link";
+import RatingReview from "@/components/RatingReview";
+import { useAuthGuard } from "@/hooks/useAuthGuard";
 
 export default function RestaurantPage() {
+  const { authorized, checking } = useAuthGuard();
   const params = useParams();
   const router = useRouter();
   const restaurantId = Number(params.id);
@@ -20,10 +22,10 @@ export default function RestaurantPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (restaurantId) {
+    if (restaurantId && authorized) {
       loadRestaurantData();
     }
-  }, [restaurantId]);
+  }, [restaurantId, authorized]);
 
   const loadRestaurantData = async () => {
     try {
@@ -42,6 +44,19 @@ export default function RestaurantPage() {
       setLoading(false);
     }
   };
+
+  if (checking) {
+    return (
+      <div className="container mx-auto px-4 py-16">
+        <div className="flex flex-col items-center justify-center min-h-[60vh]">
+          <FiLoader className="w-12 h-12 text-orange-600 animate-spin mb-4" />
+          <p className="text-gray-600">Checking access...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!authorized) return null;
 
   if (loading) {
     return (

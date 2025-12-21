@@ -1,180 +1,251 @@
-'use client';
+import Link from "next/link";
+import {
+  FiArrowRight,
+  FiClock,
+  FiFeather,
+  FiMapPin,
+  FiShield,
+  FiStar,
+  FiTrendingUp,
+  FiUsers,
+} from "react-icons/fi";
 
-import { useEffect, useState, useMemo } from 'react';
-import { restaurantApi } from '@/lib/api';
-import { Restaurant } from '@/types';
-import RestaurantCard from '@/components/RestaurantCard';
-import SearchBar from '@/components/SearchBar';
-import FilterBar from '@/components/FilterBar';
-import { RestaurantCardSkeleton } from '@/components/LoadingSkeleton';
-import { FiLoader, FiShoppingBag, FiStar, FiSun, FiFeather } from 'react-icons/fi';
-import OrderTrackingInput from '@/components/OrderTrackingInput';
-
-type SortOption = 'rating-desc' | 'rating-asc' | 'name-asc' | 'name-desc';
-
-export default function Home() {
-  const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [sortBy, setSortBy] = useState<SortOption>('rating-desc');
-
-  useEffect(() => {
-    loadRestaurants();
-  }, []);
-
-  const loadRestaurants = async () => {
-    try {
-      setLoading(true);
-      const data = await restaurantApi.getAll();
-      setRestaurants(data);
-      setError(null);
-    } catch (err) {
-      setError('Failed to load restaurants. Please make sure the backend is running.');
-      console.error('Error loading restaurants:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const filteredAndSortedRestaurants = useMemo(() => {
-    let filtered = restaurants;
-
-    // Filter by search query
-    if (searchQuery.trim()) {
-      const query = searchQuery.toLowerCase();
-      filtered = filtered.filter(
-        (r) =>
-          r.name.toLowerCase().includes(query)
-      );
-    }
-
-    // Sort
-    const sorted = [...filtered].sort((a, b) => {
-      switch (sortBy) {
-        case 'rating-desc':
-          return (b.rating || 0) - (a.rating || 0);
-        case 'rating-asc':
-          return (a.rating || 0) - (b.rating || 0);
-        case 'name-asc':
-          return a.name.localeCompare(b.name);
-        case 'name-desc':
-          return b.name.localeCompare(a.name);
-        default:
-          return 0;
-      }
-    });
-
-    return sorted;
-  }, [restaurants, searchQuery, sortBy]);
-
-  if (error) {
-    return (
-      <div className="container mx-auto px-4 py-16">
-        <div className="bg-red-50 border border-red-200 rounded-lg p-6 max-w-md mx-auto">
-          <h2 className="text-red-800 font-bold mb-2">Error</h2>
-          <p className="text-red-600">{error}</p>
-          <button
-            onClick={loadRestaurants}
-            className="mt-4 bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors"
-          >
-            Retry
-          </button>
-        </div>
-      </div>
-    );
-  }
-
+export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#fff7f1] via-white to-[#f8fbff] relative overflow-hidden">
-      {/* ambient glows */}
-      <div className="pointer-events-none absolute -left-20 -top-24 h-72 w-72 rounded-full bg-orange-300/20 blur-3xl" />
-      <div className="pointer-events-none absolute right-0 top-10 h-64 w-64 rounded-full bg-red-300/20 blur-3xl" />
-      <div className="pointer-events-none absolute -right-10 bottom-10 h-64 w-64 rounded-full bg-amber-200/30 blur-3xl" />
+    <div className="landing-bg relative isolate overflow-hidden bg-gradient-to-b from-amber-50 via-white to-slate-50 text-gray-900">
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute -left-24 top-10 h-64 w-64 rounded-full bg-orange-200/40 blur-3xl" />
+        <div className="absolute right-0 -top-20 h-80 w-80 rounded-full bg-red-300/30 blur-3xl" />
+        <div className="absolute -right-10 bottom-10 h-72 w-72 rounded-full bg-amber-300/30 blur-3xl" />
+      </div>
 
-      {/* Hero Section */}
-      <div className="bg-gradient-to-r from-orange-500 via-orange-600 to-red-600 text-white py-16 mb-10 relative overflow-hidden rounded-b-3xl shadow-[0_25px_60px_-25px_rgba(0,0,0,0.35)]">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.08),transparent_35%),radial-gradient(circle_at_80%_0%,rgba(255,255,255,0.08),transparent_30%)]" />
-        <div className="container mx-auto px-4 relative">
-          <div className="max-w-4xl mx-auto text-center space-y-4">
-            <div className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-sm font-semibold backdrop-blur-sm shadow-inner shadow-white/10">
-              <FiStar className="w-4 h-4 text-amber-200" />
-              Premium curated bites, lightning delivery
+      {/* Hero */}
+      <section className="relative px-6 py-16 sm:py-20 lg:py-28">
+        <div className="mx-auto max-w-6xl grid lg:grid-cols-[1.1fr,0.9fr] gap-12 items-center">
+          <div className="space-y-6">
+            <div className="inline-flex items-center gap-3 rounded-full bg-white/80 px-4 py-2 text-sm font-semibold shadow-lg shadow-orange-100 ring-1 ring-orange-100 backdrop-blur">
+              <span className="h-2 w-2 rounded-full bg-orange-500 animate-pulse" />
+              Freshly curated bites in under 30 minutes
             </div>
-            <h1 className="text-5xl md:text-6xl font-extrabold drop-shadow-sm">
-              🍔 Foodie
-            </h1>
-            <p className="text-lg md:text-2xl text-orange-50/90">
-              Crave. Click. Delivered from top-rated kitchens near you.
-            </p>
-            <div className="grid gap-4 md:grid-cols-[2fr,1fr] items-center">
-              <SearchBar value={searchQuery} onChange={setSearchQuery} />
-              <div className="bg-white/10 border border-white/20 backdrop-blur-sm rounded-xl p-4 text-left shadow-lg">
-                <p className="text-white/90 text-xs font-semibold mb-2">Track your order</p>
-                <OrderTrackingInput />
+            <div className="space-y-4">
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black leading-tight text-slate-900">
+                Foodie brings the city&apos;s best kitchens to your couch.
+              </h1>
+              <p className="text-lg sm:text-xl text-slate-700 max-w-2xl">
+                Discover chef-led menus, artisan desserts, and midnight comfort bowls. Built for speed, quality, and a little bit of drama on the plate.
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-3">
+              <Link
+                href="/login"
+                className="btn-primary inline-flex items-center gap-2 px-6 py-3 text-base"
+              >
+                Start with login
+                <FiArrowRight className="h-5 w-5" />
+              </Link>
+              <Link
+                href="/signup"
+                className="btn-ghost inline-flex items-center gap-2 px-6 py-3 text-base"
+              >
+                Create account
+              </Link>
+            </div>
+            <div className="flex flex-wrap items-center gap-6 text-sm text-slate-700">
+              <div className="flex items-center gap-2">
+                <FiStar className="text-amber-500" /> 4.9 average rating
+              </div>
+              <div className="flex items-center gap-2">
+                <FiClock className="text-orange-500" /> 25 min avg delivery
+              </div>
+              <div className="flex items-center gap-2">
+                <FiShield className="text-green-600" /> Secure checkout
               </div>
             </div>
-            <div className="flex flex-wrap justify-center gap-3 pt-2 text-sm text-white/90">
-              <span className="px-3 py-1 rounded-full bg-white/10 border border-white/15 flex items-center gap-2">
-                <FiSun className="w-4 h-4" /> Fresh picks
-              </span>
-              <span className="px-3 py-1 rounded-full bg-white/10 border border-white/15 flex items-center gap-2">
-                <FiFeather className="w-4 h-4" /> Light & quick
-              </span>
-              <span className="px-3 py-1 rounded-full bg-white/10 border border-white/15 flex items-center gap-2">
-                <FiStar className="w-4 h-4 text-amber-200" /> Top rated
-              </span>
+          </div>
+
+          <div className="relative">
+            <div className="glass relative overflow-hidden rounded-3xl border border-white/60 shadow-[0_25px_80px_-35px_rgba(255,100,50,0.5)]">
+              <div className="absolute inset-0 bg-gradient-to-br from-orange-500/10 via-white/60 to-amber-200/20" />
+              <div className="relative p-6 space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="text-sm font-semibold text-orange-700 bg-orange-50 px-3 py-1 rounded-full">
+                    Live orders
+                  </div>
+                  <div className="text-xs text-slate-600">08:45 PM</div>
+                </div>
+                <div className="grid gap-3">
+                  {["Smoked Bao Box", "Truffle Mac", "Classic Dosa", "Berry Cheesecake"].map((item, idx) => (
+                    <div
+                      key={item}
+                      className="flex items-center justify-between rounded-2xl bg-white/80 px-4 py-3 shadow-sm border border-orange-100"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-orange-100 to-red-100" />
+                        <div>
+                          <p className="font-semibold text-slate-900">{item}</p>
+                          <p className="text-xs text-slate-500">{idx % 2 === 0 ? "On the way" : "Cooking now"}</p>
+                        </div>
+                      </div>
+                      <div className="text-sm font-semibold text-orange-600">12-18 mins</div>
+                    </div>
+                  ))}
+                </div>
+                <div className="rounded-2xl border border-slate-200 bg-white/80 p-4 shadow-sm">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-xs uppercase tracking-wide text-slate-500">Curated for you</p>
+                      <p className="text-lg font-bold text-slate-900">Cloud Bistro</p>
+                    </div>
+                    <div className="flex items-center gap-1 text-amber-500">
+                      {Array.from({ length: 5 }).map((_, i) => (
+                        <FiStar key={i} />
+                      ))}
+                    </div>
+                  </div>
+                  <p className="mt-2 text-sm text-slate-600">
+                    Signature bowls, slow-fermented pizzas, and desserts that arrive camera-ready.
+                  </p>
+                  <div className="mt-3 flex items-center gap-3 text-xs text-orange-600 font-semibold">
+                    <span className="rounded-full bg-orange-50 px-3 py-1">Free delivery</span>
+                    <span className="rounded-full bg-orange-50 px-3 py-1">Chef specials</span>
+                    <span className="rounded-full bg-orange-50 px-3 py-1">Vegan picks</span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      <div className="container mx-auto px-4 pb-12">
-        {/* Filters and Results Count */}
-        <div className="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-          <div>
-            <h2 className="text-2xl font-bold text-gray-800 mb-1">
-              {loading ? 'Loading...' : `${filteredAndSortedRestaurants.length} Restaurants`}
-            </h2>
-            {searchQuery && (
-              <p className="text-gray-600 text-sm">
-                Showing results for "{searchQuery}"
-              </p>
-            )}
-          </div>
-          {restaurants.length > 0 && <FilterBar sortBy={sortBy} onSortChange={setSortBy} />}
+      {/* Numbers */}
+      <section className="relative z-10 border-y border-slate-100 bg-white/70 backdrop-blur py-10">
+        <div className="mx-auto max-w-6xl px-6 grid grid-cols-2 sm:grid-cols-4 gap-6 text-center">
+          {[{ label: "Partner kitchens", value: "1.2k" }, { label: "Dishes tasted", value: "48k" }, { label: "Cities", value: "36" }, { label: "Avg rating", value: "4.9" }].map((stat) => (
+            <div key={stat.label} className="rounded-2xl border border-slate-100 bg-white px-4 py-6 shadow-sm">
+              <p className="text-3xl font-black text-slate-900">{stat.value}</p>
+              <p className="text-xs uppercase tracking-wide text-slate-500 mt-1">{stat.label}</p>
+            </div>
+          ))}
         </div>
+      </section>
 
-        {/* Restaurant Grid */}
-        {loading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {[...Array(8)].map((_, i) => (
-              <RestaurantCardSkeleton key={i} />
+      {/* Features */}
+      <section className="relative px-6 py-16">
+        <div className="mx-auto max-w-6xl space-y-10">
+          <div className="space-y-3 max-w-3xl">
+            <p className="text-sm font-semibold text-orange-600">Why Foodie</p>
+            <h2 className="text-3xl sm:text-4xl font-black text-slate-900">Built for cravings, speed, and story-worthy meals.</h2>
+            <p className="text-slate-600 text-lg">From chef-curated collections to late-night rescue bowls, Foodie keeps the city&apos;s flavors in one seamless app.</p>
+          </div>
+          <div className="grid gap-6 lg:grid-cols-3">
+            {[
+              { icon: <FiTrendingUp className="h-6 w-6" />, title: "Curated to perform", copy: "Algorithmically surfaces trending dishes, seasonal drops, and chef specials you actually want." },
+              { icon: <FiMapPin className="h-6 w-6" />, title: "Precision delivery", copy: "Live-tracked couriers, optimized routing, and temperature-safe packaging." },
+              { icon: <FiUsers className="h-6 w-6" />, title: "For every mood", copy: "Family platters, comfort ramen, gluten-free pizzas, or sugar rush desserts—pick a vibe." },
+            ].map((feature) => (
+              <div key={feature.title} className="rounded-3xl bg-white/80 p-6 shadow-lg shadow-orange-100 ring-1 ring-orange-100 flex flex-col gap-3">
+                <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-orange-100 to-red-100 text-orange-700">
+                  {feature.icon}
+                </div>
+                <h3 className="text-xl font-bold text-slate-900">{feature.title}</h3>
+                <p className="text-slate-600">{feature.copy}</p>
+              </div>
             ))}
           </div>
-        ) : filteredAndSortedRestaurants.length === 0 ? (
-          <div className="text-center py-16 bg-white rounded-xl shadow-sm">
-            <FiShoppingBag className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-            <p className="text-gray-500 text-lg mb-2">
-              {searchQuery ? 'No restaurants found matching your search.' : 'No restaurants available at the moment.'}
-            </p>
-            {searchQuery && (
-              <button
-                onClick={() => setSearchQuery('')}
-                className="text-orange-600 hover:text-orange-700 font-medium"
-              >
-                Clear search
-              </button>
-            )}
+        </div>
+      </section>
+
+      {/* Flow */}
+      <section className="relative px-6 pb-16">
+        <div className="mx-auto max-w-6xl rounded-3xl bg-slate-900 text-white p-10 sm:p-12 shadow-[0_25px_80px_-35px_rgba(15,23,42,0.5)]">
+          <div className="grid gap-10 lg:grid-cols-[1.1fr,0.9fr] items-center">
+            <div className="space-y-4">
+              <p className="text-sm font-semibold text-orange-200">How it works</p>
+              <h2 className="text-3xl sm:text-4xl font-black">Three taps to &ldquo;food is here&rdquo;.</h2>
+              <p className="text-slate-200 text-lg">Pick your cravings, track in real time, and earn perks on every order.</p>
+              <div className="grid gap-4">
+                {["Browse curated drops", "Lock your order", "Track till doorstep"].map((step, idx) => (
+                  <div key={step} className="flex items-start gap-3 rounded-2xl bg-white/5 p-4 ring-1 ring-white/10">
+                    <span className="flex h-8 w-8 items-center justify-center rounded-full bg-orange-500/90 text-sm font-bold">{idx + 1}</span>
+                    <div>
+                      <p className="font-semibold text-white">{step}</p>
+                      <p className="text-sm text-slate-200/80">{idx === 0 ? "Swipe through chef picks, lifestyle menus, and new-in-town kitchens." : idx === 1 ? "Secure checkout with instant offers and scheduled deliveries." : "Minute-by-minute courier tracking with proactive status updates."}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className="flex flex-wrap gap-3">
+                <Link href="/login" className="inline-flex items-center gap-2 rounded-xl bg-white px-5 py-3 text-slate-900 font-semibold shadow-lg">
+                  Login to continue
+                  <FiArrowRight className="h-4 w-4" />
+                </Link>
+                <Link href="/signup" className="inline-flex items-center gap-2 rounded-xl bg-orange-500/90 px-5 py-3 text-white font-semibold shadow-lg shadow-orange-500/40">
+                  Get started free
+                </Link>
+              </div>
+            </div>
+
+            <div className="relative">
+              <div className="absolute -top-6 -left-6 h-24 w-24 rounded-full bg-orange-400/30 blur-3xl" />
+              <div className="glass relative rounded-3xl border border-white/20 bg-white/5 p-6 shadow-2xl">
+                <div className="flex items-center justify-between text-slate-200 text-sm">
+                  <span>Order timeline</span>
+                  <span className="inline-flex items-center gap-1 rounded-full bg-white/10 px-3 py-1 text-xs">Live</span>
+                </div>
+                <div className="mt-4 space-y-3">
+                  {["Chef accepted", "Packed with care", "Courier en route", "Arriving"].map((item, idx) => (
+                    <div key={item} className="flex items-center gap-3 rounded-2xl bg-white/5 p-3">
+                      <span className="flex h-8 w-8 items-center justify-center rounded-full bg-orange-400/90 text-sm font-bold text-slate-900">{idx + 1}</span>
+                      <div>
+                        <p className="font-semibold text-white">{item}</p>
+                        <p className="text-xs text-slate-200/80">{idx === 0 ? "Chef Aria is prepping your Smoked Bao Box." : idx === 1 ? "Sustainable, heat-lock packaging sealed." : idx === 2 ? "Rohan (2 min away) just picked it up." : "Gate 4 drop-off in 3 mins."}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {filteredAndSortedRestaurants.map((restaurant) => (
-              <RestaurantCard key={restaurant.id} restaurant={restaurant} />
-            ))}
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section className="relative px-6 pb-20">
+        <div className="mx-auto max-w-5xl overflow-hidden rounded-3xl bg-gradient-to-r from-orange-500 via-orange-600 to-red-600 text-white shadow-[0_25px_80px_-40px_rgba(220,38,38,0.6)]">
+          <div className="grid gap-8 lg:grid-cols-[1.1fr,0.9fr] items-center px-8 py-12">
+            <div className="space-y-4">
+              <p className="text-sm font-semibold text-orange-100">Ready when you are</p>
+              <h3 className="text-3xl sm:text-4xl font-black leading-tight">Skip the wait. Foodie keeps your cravings one tap away.</h3>
+              <p className="text-orange-50/90 text-lg">Sign in to pick up where you left off, or create a fresh account to start earning perks.</p>
+              <div className="flex flex-wrap gap-3">
+                <Link href="/login" className="inline-flex items-center gap-2 rounded-xl bg-white px-5 py-3 text-slate-900 font-semibold shadow-lg">
+                  Login
+                </Link>
+                <Link href="/signup" className="inline-flex items-center gap-2 rounded-xl border border-white/40 px-5 py-3 text-white font-semibold">
+                  Sign up
+                </Link>
+              </div>
+            </div>
+            <div className="rounded-2xl bg-white/10 p-6 ring-1 ring-white/20">
+              <div className="flex items-center justify-between text-sm">
+                <span className="font-semibold">Chef&apos;s drop</span>
+                <span className="inline-flex items-center gap-1 rounded-full bg-white/15 px-3 py-1 text-xs">New</span>
+              </div>
+              <div className="mt-4 grid gap-4">
+                {["Wood-fired Burrata Pizza", "Molten Chocolate Jar", "Miso Butter Ramen"].map((dish) => (
+                  <div key={dish} className="rounded-xl bg-white/10 px-4 py-3 border border-white/15">
+                    <div className="flex items-center justify-between text-sm font-semibold">
+                      <span>{dish}</span>
+                      <span className="text-orange-100">Chef curated</span>
+                    </div>
+                    <p className="text-xs text-orange-50/80 mt-1">Delivering tonight with lightning slots.</p>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
-        )}
-      </div>
+        </div>
+      </section>
     </div>
   );
 }

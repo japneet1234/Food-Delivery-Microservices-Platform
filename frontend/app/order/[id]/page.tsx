@@ -1,17 +1,19 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
-import { orderApi } from '@/lib/api';
-import { orderHistory } from '@/lib/orderHistory';
-import { Order, OrderStatus } from '@/types';
-import OrderStatusBadge from '@/components/OrderStatusBadge';
-import OrderTimeline from '@/components/OrderTimeline';
-import PaymentStatus from '@/components/PaymentStatus';
-import { FiLoader, FiCheckCircle, FiClock, FiTruck, FiPackage, FiMapPin, FiRefreshCw, FiHome, FiXCircle } from 'react-icons/fi';
-import Link from 'next/link';
+import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
+import { orderApi } from "@/lib/api";
+import { orderHistory } from "@/lib/orderHistory";
+import { Order, OrderStatus } from "@/types";
+import OrderStatusBadge from "@/components/OrderStatusBadge";
+import OrderTimeline from "@/components/OrderTimeline";
+import PaymentStatus from "@/components/PaymentStatus";
+import { FiLoader, FiCheckCircle, FiClock, FiTruck, FiPackage, FiMapPin, FiRefreshCw, FiHome, FiXCircle } from "react-icons/fi";
+import Link from "next/link";
+import { useAuthGuard } from "@/hooks/useAuthGuard";
 
 export default function OrderTrackingPage() {
+  const { authorized, checking } = useAuthGuard();
   const params = useParams();
   const orderId = Number(params.id);
   const [order, setOrder] = useState<Order | null>(null);
@@ -20,10 +22,10 @@ export default function OrderTrackingPage() {
   const [autoRefresh, setAutoRefresh] = useState(true);
 
   useEffect(() => {
-    if (orderId) {
+    if (orderId && authorized) {
       loadOrder();
     }
-  }, [orderId]);
+  }, [orderId, authorized]);
 
   // Auto-refresh order status every 3 seconds from backend
   useEffect(() => {
@@ -68,6 +70,19 @@ export default function OrderTrackingPage() {
       // Ignore transient errors; rely on last known state
     }
   };
+
+  if (checking) {
+    return (
+      <div className="container mx-auto px-4 py-16">
+        <div className="flex flex-col items-center justify-center min-h-[60vh]">
+          <FiLoader className="w-12 h-12 text-orange-600 animate-spin mb-4" />
+          <p className="text-gray-600">Checking access...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!authorized) return null;
 
   if (loading) {
     return (

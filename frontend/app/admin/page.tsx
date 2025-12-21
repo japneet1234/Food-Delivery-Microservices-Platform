@@ -1,13 +1,15 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect } from 'react';
-import { restaurantApi, partnerApi, type DeliveryPartner } from '@/lib/api';
-import { Restaurant, MenuItem } from '@/types';
-import { FiPlus, FiMapPin, FiCheck, FiX, FiLoader, FiShoppingBag, FiTruck } from 'react-icons/fi';
+import React, { useState, useEffect } from "react";
+import { restaurantApi, partnerApi, type DeliveryPartner } from "@/lib/api";
+import { Restaurant, MenuItem } from "@/types";
+import { FiPlus, FiMapPin, FiCheck, FiX, FiLoader, FiShoppingBag, FiTruck } from "react-icons/fi";
+import { useAuthGuard } from "@/hooks/useAuthGuard";
 
 type Tab = 'restaurants' | 'partners';
 
 export default function AdminPage() {
+  const { authorized, checking } = useAuthGuard();
   const [activeTab, setActiveTab] = useState<Tab>('restaurants');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -23,6 +25,18 @@ export default function AdminPage() {
     setError(message);
     setTimeout(() => setError(null), 5000);
   };
+
+  if (checking) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-[#fff7f1] via-white to-[#f8fbff]">
+        <div className="rounded-2xl bg-white px-6 py-5 shadow-lg border border-orange-100 text-orange-700 font-semibold">
+          Checking access...
+        </div>
+      </div>
+    );
+  }
+
+  if (!authorized) return null;
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#fff7f1] via-white to-[#f8fbff]">

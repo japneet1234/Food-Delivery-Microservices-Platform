@@ -1,15 +1,17 @@
-'use client';
+"use client";
 
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
-import { useCart } from '@/contexts/CartContext';
-import { orderApi } from '@/lib/api';
-import { FiTrash2, FiPlus, FiMinus, FiLoader, FiShoppingBag } from 'react-icons/fi';
-import Link from 'next/link';
-import { useAddresses } from '@/hooks/useAddresses';
-import { useCoupons } from '@/hooks/useCoupons';
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useCart } from "@/contexts/CartContext";
+import { orderApi } from "@/lib/api";
+import { FiTrash2, FiPlus, FiMinus, FiLoader, FiShoppingBag } from "react-icons/fi";
+import Link from "next/link";
+import { useAddresses } from "@/hooks/useAddresses";
+import { useCoupons } from "@/hooks/useCoupons";
+import { useAuthGuard } from "@/hooks/useAuthGuard";
 
 export default function CartPage() {
+  const { authorized, checking } = useAuthGuard();
   const router = useRouter();
   const { items, removeItem, updateQuantity, getTotal, clearCart } = useCart();
   const { addresses, selected, selectAddress, addAddress } = useAddresses();
@@ -90,6 +92,18 @@ export default function CartPage() {
       setLoading(false);
     }
   };
+
+  if (checking) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-gray-50 to-white">
+        <div className="rounded-2xl bg-white px-6 py-5 shadow-lg border border-orange-100 text-orange-700 font-semibold">
+          Checking access...
+        </div>
+      </div>
+    );
+  }
+
+  if (!authorized) return null;
 
   if (orderId) {
     return (

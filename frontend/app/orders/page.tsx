@@ -1,23 +1,25 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import Link from 'next/link';
-import { orderHistory } from '@/lib/orderHistory';
-import { Order } from '@/types';
-import OrderStatusBadge from '@/components/OrderStatusBadge';
-import { FiPackage, FiClock, FiArrowRight, FiTrash2, FiSearch, FiFilter } from 'react-icons/fi';
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { orderHistory } from "@/lib/orderHistory";
+import { Order } from "@/types";
+import OrderStatusBadge from "@/components/OrderStatusBadge";
+import { FiPackage, FiClock, FiArrowRight, FiTrash2, FiSearch, FiFilter } from "react-icons/fi";
+import { useAuthGuard } from "@/hooks/useAuthGuard";
 
 export default function OrderHistoryPage() {
+  const { authorized, checking } = useAuthGuard();
   const [orders, setOrders] = useState<Order[]>([]);
   const [query, setQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<'ALL' | Order['status']>('ALL');
 
   useEffect(() => {
+    if (!authorized) return;
     loadOrders();
-    // Refresh orders every 2 seconds to catch real-time status updates
     const interval = setInterval(loadOrders, 2000);
     return () => clearInterval(interval);
-  }, []);
+  }, [authorized]);
 
   const loadOrders = () => {
     const history = orderHistory.getAll().sort(
@@ -32,6 +34,18 @@ export default function OrderHistoryPage() {
       setOrders([]);
     }
   };
+
+  if (checking) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-[#fff7f1] via-white to-[#f8fbff]">
+        <div className="rounded-2xl bg-white px-6 py-5 shadow-lg border border-orange-100 text-orange-700 font-semibold">
+          Checking access...
+        </div>
+      </div>
+    );
+  }
+
+  if (!authorized) return null;
 
   if (orders.length === 0) {
     return (
