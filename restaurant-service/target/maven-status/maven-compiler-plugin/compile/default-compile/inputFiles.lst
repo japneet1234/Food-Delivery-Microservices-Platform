@@ -1,8 +1,8 @@
-/home/japneet/Desktop/swiggy/restaurant-service/src/main/java/com/example/restaurant/repository/RestaurantRepository.java
-/home/japneet/Desktop/swiggy/restaurant-service/src/main/java/com/example/restaurant/controller/RestaurantController.java
-/home/japneet/Desktop/swiggy/restaurant-service/src/main/java/com/example/restaurant/config/RedisCacheConfig.java
-/home/japneet/Desktop/swiggy/restaurant-service/src/main/java/com/example/restaurant/service/RestaurantService.java
-/home/japneet/Desktop/swiggy/restaurant-service/src/main/java/com/example/restaurant/entity/MenuItem.java
-/home/japneet/Desktop/swiggy/restaurant-service/src/main/java/com/example/restaurant/RestaurantServiceApplication.java
-/home/japneet/Desktop/swiggy/restaurant-service/src/main/java/com/example/restaurant/repository/MenuItemRepository.java
-/home/japneet/Desktop/swiggy/restaurant-service/src/main/java/com/example/restaurant/entity/Restaurant.java
+/home/japneet/Desktop/misc/swiggy/restaurant-service/src/main/java/com/example/restaurant/entity/Restaurant.java
+/home/japneet/Desktop/misc/swiggy/restaurant-service/src/main/java/com/example/restaurant/repository/MenuItemRepository.java
+/home/japneet/Desktop/misc/swiggy/restaurant-service/src/main/java/com/example/restaurant/RestaurantServiceApplication.java
+/home/japneet/Desktop/misc/swiggy/restaurant-service/src/main/java/com/example/restaurant/controller/RestaurantController.java
+/home/japneet/Desktop/misc/swiggy/restaurant-service/src/main/java/com/example/restaurant/repository/RestaurantRepository.java
+/home/japneet/Desktop/misc/swiggy/restaurant-service/src/main/java/com/example/restaurant/service/RestaurantService.java
+/home/japneet/Desktop/misc/swiggy/restaurant-service/src/main/java/com/example/restaurant/entity/MenuItem.java
+/home/japneet/Desktop/misc/swiggy/restaurant-service/src/main/java/com/example/restaurant/config/RedisCacheConfig.java

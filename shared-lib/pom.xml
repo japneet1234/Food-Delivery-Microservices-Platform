@@ -9,7 +9,7 @@
   <packaging>jar</packaging>
   <name>shared-lib</name>
   <properties>
-    <maven.compiler.release>8</maven.compiler.release>
+    <maven.compiler.release>25</maven.compiler.release>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
   <build>
@@ -17,7 +17,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.11.0</version>
+        <version>3.13.0</version>
         <configuration>
           <release>${maven.compiler.release}</release>
         </configuration>
